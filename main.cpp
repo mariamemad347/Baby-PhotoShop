@@ -34,6 +34,35 @@ void Invert_Image(Image& image){
         }
     }
 }
+void mergeImages(const Image& a, const Image& b, Image& merged, int merge_option) {
+    if (merge_option == 1) {
+        int max_w = (a.width > b.width) ? a.width : b.width;
+        int max_h = (a.height > b.height) ? a.height : b.height;
+        merged = Image(max_w, max_h);
+        for (int x = 0; x < max_w; ++x) {
+            for (int y = 0; y < max_h; ++y) {
+                int a_x = (x * a.width) / max_w;
+                int a_y = (y * a.height) / max_h;
+                int b_x = (x * b.width) / max_w;
+                int b_y = (y * b.height) / max_h;
+                for (int c = 0; c < 3; ++c) {
+                    merged(x, y, c) = (a(a_x, a_y, c) + b(b_x, b_y, c)) / 2;
+                }
+            }
+        }
+    } else {
+        int w = (a.width < b.width) ? a.width : b.width;
+        int h = (a.height < b.height) ? a.height : b.height;
+        merged = Image(w, h);
+        for (int x = 0; x < w; ++x) {
+            for (int y = 0; y < h; ++y) {
+                for (int c = 0; c < 3; ++c) {
+                    merged(x, y, c) = (a(x, y, c) + b(x, y, c)) / 2;
+                }
+            }
+        }
+    }
+}
 void Horizontal_Flip(Image &image) {
     for (int i = 0; i < image.width/2; ++i) {
         for (int j = 0; j < image.height; ++j) {
