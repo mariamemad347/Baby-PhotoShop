@@ -16,6 +16,26 @@ void Grayscale(Image &image) {
         }
     }
 }
+void Black_and_White(Image &image) {
+    for (int i = 0; i < image.width; ++i) {
+        for (int j = 0; j < image.height; ++j) {
+            unsigned int avg = 0;
+            for (int k = 0; k < 3; ++k) {
+                avg += image(i, j, k);
+            }
+            if (avg < 128) {
+                image(i, j, 0) = 0;
+                image(i, j, 1) = 0;
+                image(i, j, 2) = 0;
+            }
+            else {
+                image(i, j, 0) = 255;
+                image(i, j, 1) = 255;
+                image(i, j, 2) = 255;
+            }
+        }
+    }
+}
 void Invert_Image(Image &image) {
     for (int i = 0; i < image.width; ++i) {
         for (int j = 0; j < image.height; ++j) {
@@ -25,15 +45,7 @@ void Invert_Image(Image &image) {
         }
     }
 }
-void Invert_Image(Image& image){
-    for (int i=0; i<image.width; i++){
-        for (int j=0; j<image.height; j++){
-            for (int k=0; k<image.channels; k++){
-                image(i,j,k)=255-image(i,j,k);
-            }
-        }
-    }
-}
+
 void mergeImages(const Image& a, const Image& b, Image& merged, int merge_option) {
     if (merge_option == 1) {
         int max_w = (a.width > b.width) ? a.width : b.width;
