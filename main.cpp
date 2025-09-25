@@ -48,25 +48,27 @@ void Grayscale(Image &image) {
     }
 }
 void Black_and_White(Image &image) {
+    long long total = 0;
     for (int i = 0; i < image.width; ++i) {
         for (int j = 0; j < image.height; ++j) {
-            unsigned int avg = 0;
-            for (int k = 0; k < 3; ++k) {
-                avg += image(i, j, k);
-            }
-            if (avg < 128) {
-                image(i, j, 0) = 0;
-                image(i, j, 1) = 0;
-                image(i, j, 2) = 0;
-            }
-            else {
-                image(i, j, 0) = 255;
-                image(i, j, 1) = 255;
-                image(i, j, 2) = 255;
-            }
+            unsigned int luminance = 0.299 * image(i, j, 0) + 0.587 * image(i, j, 1) + 0.114 * image(i, j, 2);
+            total += luminance;
+        }
+    }
+    unsigned int threshold = total / (image.width * image.height);
+
+    for (int i = 0; i < image.width; ++i) {
+        for (int j = 0; j < image.height; ++j) {
+            unsigned int luminance = 0.299 * image(i, j, 0) + 0.587 * image(i, j, 1) + 0.114 * image(i, j, 2);
+
+            unsigned char value = (luminance < threshold) ? 0 : 255;
+            image(i, j, 0) = value;
+            image(i, j, 1) = value;
+            image(i, j, 2) = value;
         }
     }
 }
+
 void Invert_Image(Image &image) {
     for (int i = 0; i < image.width; ++i) {
         for (int j = 0; j < image.height; ++j) {
