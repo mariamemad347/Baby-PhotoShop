@@ -1,12 +1,43 @@
 #include "Image_Class.h"
+#include <fstream>
+#include <algorithm>
+
 using namespace std;
 Image image;
+string filename;
 
+bool fileExists(const string &name) {
+    ifstream f(name);
+    return f.good();
+}
+bool validExt(const string &name) {
+    string s = name;
+    transform(s.begin(), s.end(), s.begin(), ::tolower);
+    if (s.size() >= 5 && s.rfind(".jpeg") == s.size()-5) return true;
+    if (s.size() >= 4 && (s.rfind(".jpg") == s.size()-4 ||
+                          s.rfind(".png") == s.size()-4 ||
+                          s.rfind(".bmp") == s.size()-4)) return true;
+    return false;
+}
+
+void showMenu() {
+    cout << "\n--- Image Menu ---\n";
+    cout << "1) Load a new image\n";
+    cout << "2) Filter: Grayscale\n";
+    cout << "3) Filter: Black and White\n";
+    cout << "4) Filter: Invert Image\n";
+    cout << "5) Filter: Merge with another image\n";
+    cout << "6) Filter: Flip\n";
+    cout << "7) Filter: Rotate\n";
+    cout << "8) Save current image\n";
+    cout << "9) Exit\n";
+    cout << "Select option: ";
+}
 void Grayscale(Image &image) {
     for (int i = 0; i < image.width; ++i) {
         for (int j = 0; j < image.height; ++j) {
             unsigned int avg =0;
-            for (int k = 0; k < std::min(image.channels, 3); ++k) {
+            for (int k = 0; k < min(image.channels, 3); ++k) {
                 avg+= image(i,j,k);
             }
             avg /= 3;
@@ -45,7 +76,6 @@ void Invert_Image(Image &image) {
         }
     }
 }
-
 void mergeImages(const Image& a, const Image& b, Image& merged, int merge_option) {
     if (merge_option == 1) {
         int max_w = (a.width > b.width) ? a.width : b.width;
@@ -75,6 +105,7 @@ void mergeImages(const Image& a, const Image& b, Image& merged, int merge_option
         }
     }
 }
+
 void Horizontal_Flip(Image &image) {
     for (int i = 0; i < image.width/2; ++i) {
         for (int j = 0; j < image.height; ++j) {
@@ -106,7 +137,7 @@ void rotate180(Image& image){
                 image(i, image.height-1-j, k)=temp;
             }
          }
-    } 
+    }
 }
 
 void rotate270(Image& image){
@@ -115,9 +146,9 @@ void rotate270(Image& image){
         for (int j=0; j<image.height; j++) {
             for (int k=0; k<3; k++){
                 rotated(j, image.width-1-i, 0)=image(i,j,0);
-                rotated(j, image.width-1-i, 1)=image(i,j,1); 
+                rotated(j, image.width-1-i, 1)=image(i,j,1);
                 rotated(j, image.width-1-i, 2)=image(i,j,2);
-            }     
+            }
         }
     }
     image=rotated;
@@ -133,6 +164,136 @@ void rotate90(Image& image){
         }
     }
     image=rotated;
+}
+void save_image(Image&image) {
+    cout << "if you want to save the image in the same file type y or Y, otherwise type any other character: ";
+    char x;
+    cin >> x;
+    if (x == 'Y' || x == 'y') {
+        image.saveImage(filename);
+    }
+    else {
+        string filename2;
+        cout << "Please enter image name to store new image\n";
+        cout << "and specify extension .JPG, .JPEG, .BMP, .PNG: ";
+        cin >> filename2;
+        while (!validExt(filename2) ){
+            cout << "File name you entered is not valid\n";
+            cout << "Please enter a valid image name: ";
+            cin >> filename2;
+        }
+        image.saveImage(filename2);
+    }
+}
+int main()
+{
+    cout << "Please enter the file name: ";
+    cin >> filename;
+    while (!fileExists(filename)) {
+        cout << "File name you entered is not valid\n";
+        cout << "Please enter a valid image name: ";
+        cin >> filename;
+    }
+    image.loadNewImage(filename);
+    bool flag = true;
+    while (flag) {
+        showMenu();
+        int option;
+        cin >> option;
+        switch (option) {
+            case 1:
+                cout << "if you want to save the image before loading new one type y or Y, otherwise type any other character: ";
+                char x;
+                cin >> x;
+                if (x=='y'||x == 'Y') {
+                    save_image(image);
+                }
+                flag = false;
+                cout << "Please enter the file name: ";
+                cin >> filename;
+                while (!image.loadNewImage(filename)) {
+                    cout << "File name you entered is not valid";
+                    cout << "Please enter a valid image name: ";
+                    cin >> filename;
+                }
+                break;
+            case 2:
+                Grayscale(image);
+                break;
+            case 3:
+                Black_and_White(image);
+                break;
+            case 4:
+                Invert_Image(image);
+                break;
+            case 5: {
+                cout << "Please enter the second file name: ";
+                string secondFile;
+                cin >> secondFile;
+                Image a(filename);
+                Image b(secondFile);
+                Image merged;
+                int merge_option;
+                cout << "Merge options:\n";
+                cout << "1. Resize to largest dimensions\n";
+                cout << "2. Use common area\n";
+                cout << "Enter merge option: ";
+                cin >> merge_option;
+                mergeImages(a, b, merged, merge_option);
+                image = merged;
+                break;
+            }
+            case 6:
+                cout << "1) Horizontal Flip\n";
+                cout << "2) Vertical Flip\n";
+                cout << "Select option: ";
+                cin >> option;
+                switch (option) {
+                    case 1:
+                        Horizontal_Flip(image);
+                        break;
+                    case 2:
+                        Vertical_Flip(image);
+                        break;
+                }
+                break;
+            case 7:
+                cout << "1) Rotate 90 degrees\n";
+                cout << "2) Rotate 180 degrees\n";
+                cout << "3) Rotate 270 degrees\n";
+                cout << "Select option: ";
+                cin >> option;
+                switch (option) {
+                    case 1:
+                        rotate90(image);
+                    break;
+                    case 2:
+                        rotate180(image);
+                    break;
+                    case 3:
+                        rotate270(image);
+                        break;
+                }
+                break;
+
+            case 8:
+                save_image(image);
+                break;
+            case 9:
+                cout << "if you want to save the image before exit type y or Y, otherwise type any other character: ";
+                char y;
+                cin >> y;
+                if (y=='y'||y == 'Y') {
+                    save_image(image);
+                }
+                flag = false;
+                break;
+
+
+
+        }
+    }
+    return 0;
 }
 
 
