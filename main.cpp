@@ -1,3 +1,4 @@
+
 #include "Image_Class.h"
 #include <fstream>
 #include <algorithm>
@@ -68,7 +69,6 @@ void Black_and_White(Image &image) {
         }
     }
 }
-
 void Invert_Image(Image &image) {
     for (int i = 0; i < image.width; ++i) {
         for (int j = 0; j < image.height; ++j) {
@@ -78,6 +78,7 @@ void Invert_Image(Image &image) {
         }
     }
 }
+
 void mergeImages(const Image& a, const Image& b, Image& merged, int merge_option) {
     if (merge_option == 1) {
         int max_w = (a.width > b.width) ? a.width : b.width;
@@ -130,6 +131,7 @@ void Vertical_Flip(Image &image) {
         }
     }
 }
+
 void rotate180(Image& image){
     for (int i=0; i<image.width; i++){
         for (int j=0; j<image.height/2; j++){
@@ -141,7 +143,6 @@ void rotate180(Image& image){
          }
     }
 }
-
 void rotate270(Image& image){
     Image rotated(image.height, image.width);
     for (int i=0; i<image.width; i++) {
@@ -155,7 +156,6 @@ void rotate270(Image& image){
     }
     image=rotated;
 }
-
 void rotate90(Image& image){
     Image rotated(image.height, image.width);
     for (int i=0; i<image.width; i++) {
@@ -167,6 +167,40 @@ void rotate90(Image& image){
     }
     image=rotated;
 }
+
+void crop(int w, int h, int w1, int h1, Image & image) {
+    Image cropped(w, h);
+    for (int i=0; i<w; i++) {
+        for (int j=0; j<h; j++) {
+            for (int k=0; k<3; k++) {
+                cropped(i, j, k)=image(i+w1, j+h1, k);
+            }
+        }
+    }
+    image = cropped;
+}
+
+void resize(Image &image, int newW, int newH) {
+    int oldH = image.height;
+    int oldW = image.width;
+    float xScale = (float)oldW / newW;
+    float yScale = (float)oldH / newH;
+    Image output(newW, newH);
+
+    for (int y = 0; y < newH; y++) {
+        for (int x = 0; x < newW; x++) {
+            int origX = (int)(x * xScale + 0.5f);
+            int origY = (int)(y * yScale + 0.5f);
+            if (origX >= oldW) origX = oldW - 1;
+            if (origY >= oldH) origY = oldH - 1;
+            for (int c = 0; c < 3; c++) {
+                output(x, y, c) = image(origX, origY, c);
+            }
+        }
+    }
+    image = output;
+}
+
 void save_image(Image&image) {
     cout << "if you want to save the image in the same file type y or Y, otherwise type any other character: ";
     char x;
@@ -297,5 +331,3 @@ int main()
     }
     return 0;
 }
-
-
