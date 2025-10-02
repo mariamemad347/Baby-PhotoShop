@@ -151,11 +151,9 @@ void rotate270(Image& image){
     Image rotated(image.height, image.width);
     for (int i=0; i<image.width; i++) {
         for (int j=0; j<image.height; j++) {
-            for (int k=0; k<3; k++){
-                rotated(j, image.width-1-i, 0)=image(i,j,0);
-                rotated(j, image.width-1-i, 1)=image(i,j,1);
-                rotated(j, image.width-1-i, 2)=image(i,j,2);
-            }
+            rotated(j, image.width-1-i, 0)=image(i,j,0);
+            rotated(j, image.width-1-i, 1)=image(i,j,1);
+            rotated(j, image.width-1-i, 2)=image(i,j,2);
         }
     }
     image=rotated;
@@ -238,8 +236,8 @@ void oil_painting (Image&image){
             int r_end   = min(image.width - 1, i + 5);
             int c_start = max(0, j - 5);
             int c_end   = min(image.height - 1, j + 5);
-            for (int r = r_start; r < r_end; r++) {
-                for (int c = c_start; c < c_end; c++) {
+            for (int r = r_start; r <= r_end; r++) {
+                for (int c = c_start; c <= c_end; c++) {
                     int intensity = int(0.299*image(r, c, 0) + 0.587*image(r, c, 1) + 0.114*image(r, c, 2));
                     intensity_count[intensity]++;
                     averageR[intensity] += image(r, c, 0);
@@ -255,10 +253,16 @@ void oil_painting (Image&image){
                     maxindex = x;
                 }
             }
-            final(i, j, 0) = averageR[maxindex]/max;
-            final(i, j, 1) = averageG[maxindex]/max;
-            final(i, j, 2) = averageB[maxindex]/max;
-
+            if (max>0) {
+                final(i, j, 0) = averageR[maxindex]/max;
+                final(i, j, 1) = averageG[maxindex]/max;
+                final(i, j, 2) = averageB[maxindex]/max;
+            }
+            else {
+                final(i,j,0) = image(i,j,0);
+                final(i,j,1) = image(i,j,1);
+                final(i,j,2) = image(i,j,2);
+            }
 
             fill(intensity_count.begin(), intensity_count.end(), 0);
             fill(averageR.begin(), averageR.end(), 0);
@@ -321,6 +325,7 @@ int main()
                     cout << "Please enter a valid image name: \n";
                     getline(cin , filename);
                 }
+                image.loadNewImage(filename);
                 break;
             case 2:
                 Grayscale(image);
@@ -334,7 +339,8 @@ int main()
             case 5: {
                 cout << "Please enter the second file name: ";
                 string secondFile;
-                cin >> secondFile;
+                cin.ignore();
+                getline(cin, secondFile);
                 Image a(filename);
                 Image b(secondFile);
                 Image merged;
@@ -410,6 +416,17 @@ int main()
                 cout << "Enter the height you want to crop from: ";
                 int height;
                 cin >> height;
+                while (new_width+width > image.width || new_height+height > image.height) {
+                    cout << "The width and height are out of boundaries\n";
+                    cout << "Enter the width of the new image: ";
+                    cin >> new_width;
+                    cout << "Enter the height of the new image: ";
+                    cin >> new_height;
+                    cout << "Enter the width you want to crop from: ";
+                    cin >> width;
+                    cout << "Enter the height you want to crop from: ";
+                    cin >> height;
+                }
                 crop(new_width, new_height,width, height, image);
                 break;
             case 12:
