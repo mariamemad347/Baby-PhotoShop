@@ -1,7 +1,7 @@
-
 #include "Image_Class.h"
 #include <fstream>
 #include <algorithm>
+#include <vector>
 
 using namespace std;
 Image image;
@@ -30,9 +30,12 @@ void showMenu() {
     cout << "5) Filter: Merge with another image\n";
     cout << "6) Filter: Flip\n";
     cout << "7) Filter: Rotate\n";
-    cout << "8) Filter: Darken / Lighten\n"; 
-    cout << "9) Save current image\n";
-    cout << "10) Exit\n";
+    cout << "8) Filter: Darken / Lighten\n";
+    cout << "9) Filter: Crop\n";
+    cout << "12) Filter: Resize\n";
+    cout << "15) Filter: oil painting\n";
+    cout << "16) Save current image\n";
+    cout << "17) Exit\n";
     cout << "Select option: ";
 }
 void Grayscale(Image &image) {
@@ -222,6 +225,50 @@ void resize(Image &image, int newW, int newH) {
     image = output;
 }
 
+void oil_painting (Image&image){
+    vector<int> intensity_count(256, 0);
+    vector<int> averageR(256, 0);
+    vector<int> averageG(256, 0);
+    vector<int> averageB(256, 0);
+    Image final(image.width, image.height);
+
+    for (int i = 0; i < image.width; i++) {
+        for (int j = 0; j < image.height; j++) {
+            int r_start = max(0, i - 5);
+            int r_end   = min(image.width - 1, i + 5);
+            int c_start = max(0, j - 5);
+            int c_end   = min(image.height - 1, j + 5);
+            for (int r = r_start; r < r_end; r++) {
+                for (int c = c_start; c < c_end; c++) {
+                    int intensity = int(0.299*image(r, c, 0) + 0.587*image(r, c, 1) + 0.114*image(r, c, 2));
+                    intensity_count[intensity]++;
+                    averageR[intensity] += image(r, c, 0);
+                    averageG[intensity] += image(r, c, 1);
+                    averageB[intensity] += image(r, c, 2);
+                }
+            }
+            int max = 0;
+            int maxindex = 0;
+            for (int x = 0; x < intensity_count.size(); x++) {
+                if (intensity_count[x] > max) {
+                    max = intensity_count[x];
+                    maxindex = x;
+                }
+            }
+            final(i, j, 0) = averageR[maxindex]/max;
+            final(i, j, 1) = averageG[maxindex]/max;
+            final(i, j, 2) = averageB[maxindex]/max;
+
+
+            fill(intensity_count.begin(), intensity_count.end(), 0);
+            fill(averageR.begin(), averageR.end(), 0);
+            fill(averageG.begin(), averageG.end(), 0);
+            fill(averageB.begin(), averageB.end(), 0);
+        }
+    }
+    image = final;
+}
+
 void save_image(Image&image) {
     cout << "if you want to save the image in the same file type y or Y, otherwise type any other character: ";
     char x;
@@ -350,9 +397,36 @@ int main()
                break;
                }
             case 9:
+                cout << "Enter the width of the new image: ";
+                int new_width;
+                cin >> new_width;
+                cout << "Enter the height of the new image: ";
+                int new_height;
+                cin >> new_height;
+                cout << "Enter the width you want to crop from: ";
+                int width;
+                cin >> width;
+                cout << "Enter the height you want to crop from: ";
+                int height;
+                cin >> height;
+                crop(new_width, new_height,width, height, image);
+                break;
+            case 12:
+                cout << "Enter the width of the new image: ";
+                int NewWidth;
+                cin >> NewWidth;
+                cout << "Enter the height of the new image: ";
+                int NewHeight;
+                cin >> NewHeight;
+                resize(image, NewWidth, NewHeight);
+                break;
+            case 15:
+                oil_painting(image);
+                break;
+            case 16:
                 save_image(image);
                 break;
-            case 10:
+            case 17:
                 cout << "if you want to save the image before exit type y or Y, otherwise type any other character: ";
                 char y;
                 cin >> y;
