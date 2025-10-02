@@ -30,8 +30,9 @@ void showMenu() {
     cout << "5) Filter: Merge with another image\n";
     cout << "6) Filter: Flip\n";
     cout << "7) Filter: Rotate\n";
-    cout << "8) Save current image\n";
-    cout << "9) Exit\n";
+    cout << "8) Filter: Darken / Lighten\n"; 
+    cout << "9) Save current image\n";
+    cout << "10) Exit\n";
     cout << "Select option: ";
 }
 void Grayscale(Image &image) {
@@ -166,6 +167,26 @@ void rotate90(Image& image){
         }
     }
     image=rotated;
+}
+
+void Darken_Image(Image &image, float percent) {
+    for (int x = 0; x < image.width; x++) {
+        for (int y = 0; y < image.height; y++) {
+            for (int z = 0; z < 3; z++) {
+                image(x, y, z) = image(x, y, z) * (1 - percent);
+            }
+        }
+    }
+}
+
+void Lighten_Image(Image &image, float percent) {
+    for (int x = 0; x < image.width; x++) {
+        for (int y = 0; y < image.height; y++) {
+            for (int z = 0; z < 3; z++) {
+                image(x, y, z) = image(x, y, z) + (255 - image(x, y, z)) * percent;
+            }
+        }
+    }
 }
 
 void crop(int w, int h, int w1, int h1, Image & image) {
@@ -311,11 +332,27 @@ int main()
                         break;
                 }
                 break;
-
-            case 8:
+            case 8: {
+                int choice;
+                cout << "1) Darken\n";
+                cout << "2) Lighten\n";
+                cout << "Select option: ";
+                cin >> choice;
+                float percent;
+                cout << "Enter percentage (0 to 100): ";
+                cin >> percent;
+                percent /= 100.0;
+               if (choice == 1) {
+                   Darken_Image(image, percent);
+               } else if (choice == 2) {
+                    Lighten_Image(image, percent);
+               }
+               break;
+               }
+            case 9:
                 save_image(image);
                 break;
-            case 9:
+            case 10:
                 cout << "if you want to save the image before exit type y or Y, otherwise type any other character: ";
                 char y;
                 cin >> y;
@@ -324,9 +361,6 @@ int main()
                 }
                 flag = false;
                 break;
-
-
-
         }
     }
     return 0;
