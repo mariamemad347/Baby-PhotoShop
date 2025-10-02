@@ -315,9 +315,9 @@ int main()
                 flag = false;
                 cout << "Please enter the file name: ";
                 cin >> filename;
-                while (!image.loadNewImage(filename)) {
+                while (!fileExists(filename)) {
                     cout << "File name you entered is not valid";
-                    cout << "Please enter a valid image name: ";
+                    cout << "Please enter a valid image name: \n";
                     cin >> filename;
                 }
                 break;
