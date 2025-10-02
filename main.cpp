@@ -273,30 +273,31 @@ void save_image(Image&image) {
     cout << "if you want to save the image in the same file type y or Y, otherwise type any other character: ";
     char x;
     cin >> x;
+    cin.ignore();
     if (x == 'Y' || x == 'y') {
         image.saveImage(filename);
     }
     else {
         string filename2;
         cout << "Please enter image name to store new image\n";
-        cout << "and specify extension .JPG, .JPEG, .BMP, .PNG: ";
-        cin >> filename2;
+        cout << "and specify extension .JPG, .JPEG, .BMP, .PNG: \n";
+        getline(cin, filename2);
         while (!validExt(filename2) ){
             cout << "File name you entered is not valid\n";
-            cout << "Please enter a valid image name: ";
-            cin >> filename2;
+            cout << "Please enter a valid image name: \n";
+            getline(cin, filename2);
         }
         image.saveImage(filename2);
     }
 }
 int main()
 {
-    cout << "Please enter the file name: ";
-    cin >> filename;
+    cout << "Please enter the file name: \n";
+    getline(cin, filename);
     while (!fileExists(filename)) {
         cout << "File name you entered is not valid\n";
-        cout << "Please enter a valid image name: ";
-        cin >> filename;
+        cout << "Please enter a valid image name: \n";
+        getline(cin, filename);
     }
     image.loadNewImage(filename);
     bool flag = true;
@@ -309,16 +310,16 @@ int main()
                 cout << "if you want to save the image before loading new one type y or Y, otherwise type any other character: ";
                 char x;
                 cin >> x;
+                cin.ignore();
                 if (x=='y'||x == 'Y') {
                     save_image(image);
                 }
-                flag = false;
-                cout << "Please enter the file name: ";
-                cin >> filename;
+                cout << "Please enter the file name: \n";
+                getline(cin, filename);
                 while (!fileExists(filename)) {
-                    cout << "File name you entered is not valid";
+                    cout << "File name you entered is not valid\n";
                     cout << "Please enter a valid image name: \n";
-                    cin >> filename;
+                    getline(cin , filename);
                 }
                 break;
             case 2:
