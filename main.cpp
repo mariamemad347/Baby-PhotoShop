@@ -32,6 +32,7 @@ void showMenu() {
     cout << "7) Filter: Rotate\n";
     cout << "8) Filter: Darken / Lighten\n";
     cout << "9) Filter: Crop\n";
+    cout << "11) Filter: Edge Detection\n";
     cout << "12) Filter: Resize\n";
     cout << "15) Filter: oil painting\n";
     cout << "16) Save current image\n";
@@ -201,6 +202,44 @@ void crop(int w, int h, int w1, int h1, Image & image) {
         }
     }
     image = cropped;
+}
+
+void Edge_Detection(Image &image) {
+    for (int x = 0; x < image.width; x++) {
+        for (int y = 0; y < image.height; y++) {
+            int avg = 0;
+            for (int c = 0; c < 3; c++) {
+                avg += image(x, y, c);
+            }
+            avg /= 3;
+            for (int c = 0; c < 3; c++) {
+                image(x, y, c) = avg;
+            }
+        }
+    }
+    int threshold;
+    cout << "Enter threshold value (recommended 0 - 100): ";
+    cin >> threshold;
+    Image edges(image.width, image.height);
+    for (int x = 1; x < image.width - 1; x++) {
+        for (int y = 1; y < image.height - 1; y++) {
+            int left  = image(x - 1, y, 0);
+            int right = image(x + 1, y, 0);
+            int up    = image(x, y - 1, 0);
+            int down  = image(x, y + 1, 0);
+            int horizontal = abs(right - left);
+            int vertical   = abs(down - up);
+            int magnitude  = horizontal + vertical;
+            int edgeColor = 255;
+            if (magnitude > threshold) {
+                edgeColor = 255 - min(magnitude * 2, 255);
+            }
+            for (int c = 0; c < 3; c++) {
+                edges(x, y, c) = edgeColor;
+            }
+        }
+    }
+    image = edges;  
 }
 
 void resize(Image &image, int newW, int newH) {
@@ -406,7 +445,7 @@ int main()
                }
                break;
                }
-            case 9:
+            case 9:{
                 cout << "Enter the width of the new image: ";
                 int new_width;
                 cin >> new_width;
@@ -432,7 +471,12 @@ int main()
                 }
                 crop(new_width, new_height,width, height, image);
                 break;
-            case 12:
+            }
+            case 11:{
+                Edge_Detection(image);
+                break;
+            }
+            case 12:{
                 cout << "Enter the width of the new image: ";
                 int NewWidth;
                 cin >> NewWidth;
@@ -441,13 +485,16 @@ int main()
                 cin >> NewHeight;
                 resize(image, NewWidth, NewHeight);
                 break;
-            case 15:
+            }
+            case 15:{
                 oil_painting(image);
                 break;
-            case 16:
+            }
+            case 16:{
                 save_image(image);
                 break;
-            case 17:
+            }
+            case 17:{
                 cout << "if you want to save the image before exit type y or Y, otherwise type any other character: ";
                 char y;
                 cin >> y;
@@ -456,6 +503,7 @@ int main()
                 }
                 flag = false;
                 break;
+            }
         }
     }
     return 0;
