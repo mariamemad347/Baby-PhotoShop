@@ -184,7 +184,8 @@ void Lighten_Image(Image &image, float percent) {
     for (int x = 0; x < image.width; x++) {
         for (int y = 0; y < image.height; y++) {
             for (int z = 0; z < 3; z++) {
-                image(x, y, z) = image(x, y, z) + (255 - image(x, y, z)) * percent;
+                int val = image(x, y, z) + (255 - image(x, y, z)) * percent;
+                img(x,y,z)=min(255,val);
             }
         }
     }
@@ -395,11 +396,13 @@ int main()
                 float percent;
                 cout << "Enter percentage (0 to 100): ";
                 cin >> percent;
-                percent /= 100.0;
+                percent= max(0.0,min(percent/100.0,1.0));
                if (choice == 1) {
                    Darken_Image(image, percent);
                } else if (choice == 2) {
                     Lighten_Image(image, percent);
+               }else{
+                   cout <<"Invalid choice\n";
                }
                break;
                }
