@@ -187,7 +187,7 @@ void Lighten_Image(Image &image, float percent) {
         for (int y = 0; y < image.height; y++) {
             for (int z = 0; z < 3; z++) {
                 int val = image(x, y, z) + (255 - image(x, y, z)) * percent;
-                img(x,y,z)=min(255,val);
+                image(x,y,z)=min(255,val);
             }
         }
     }
