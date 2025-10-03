@@ -34,6 +34,7 @@ void showMenu() {
     cout << "9) Filter: Crop\n";
     cout << "11) Filter: Edge Detection\n";
     cout << "12) Filter: Resize\n";
+    cout << "14) Filter:enhanceSunlight\n";
     cout << "15) Filter: oil painting\n";
     cout << "16) Save current image\n";
     cout << "17) Exit\n";
@@ -263,6 +264,26 @@ void resize(Image &image, int newW, int newH) {
     image = output;
 }
 
+void enhanceSunlight(Image &image) {
+    for (int x = 0; x < image.width; x++) {
+        for (int y = 0; y < image.height; y++) {
+            // Get original pixel values
+            int r = image(x, y, 0);
+            int g = image(x, y, 1);
+            int b = image(x, y, 2);
+            r = min(255, r + 50);
+            g = min(255, g + 50);
+            b = min(255, b + 50);
+            r = min(255, r + 20);
+            g = min(255, g + 10);
+            b = max(0, b - 15);
+            image(x, y, 0) = r;
+            image(x, y, 1) = g;
+            image(x, y, 2) = b;
+        }
+    }
+}
+
 void oil_painting (Image&image){
     vector<int> intensity_count(256, 0);
     vector<int> averageR(256, 0);
@@ -484,6 +505,10 @@ int main()
                 int NewHeight;
                 cin >> NewHeight;
                 resize(image, NewWidth, NewHeight);
+                break;
+            }
+            case 14:{
+                enhanceSunlight(image);
                 break;
             }
             case 15:{
