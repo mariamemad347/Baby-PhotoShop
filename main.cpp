@@ -6,7 +6,8 @@
 using namespace std;
 Image image;
 string filename;
-
+vector<Image> v;
+vector<Image> v2;
 bool fileExists(const string &name) {
     ifstream f(name);
     return f.good();
@@ -36,15 +37,17 @@ void showMenu() {
     cout << "12) Filter: Resize\n";
     cout << "14) Filter:enhanceSunlight\n";
     cout << "15) Filter: oil painting\n";
-    cout << "16) Save current image\n";
-    cout << "17) Exit\n";
+    cout << "16) Undo\n";
+    cout << "17) Redo\n";
+    cout << "18) Save current image\n";
+    cout << "19) Exit\n";
     cout << "Select option: ";
 }
 void Grayscale(Image &image) {
     for (int i = 0; i < image.width; ++i) {
         for (int j = 0; j < image.height; ++j) {
             unsigned int avg =0;
-            for (int k = 0; k < min(image.channels, 3); ++k) {
+            for (int k = 0; k < 3; ++k) {
                 avg+= image(i,j,k);
             }
             avg /= 3;
@@ -138,17 +141,18 @@ void Vertical_Flip(Image &image) {
     }
 }
 
-void rotate180(Image& image){
-    for (int i=0; i<image.width; i++){
-        for (int j=0; j<image.height/2; j++){
-            for (int k=0; k<3; k++){
-                int temp=image(i,j,k);
-                image(i,j,k)=image(i, image.height-1-j, k);
-                image(i, image.height-1-j, k)=temp;
+void rotate180(Image& image) {
+    Image rotated(image.width, image.height);
+    for (int i = 0; i < image.width; i++) {
+        for (int j = 0; j < image.height; j++) {
+            for (int k = 0; k < 3; k++) {
+                rotated(image.width-1-i, image.height-1-j, k) = image(i,j,k);
             }
-         }
+        }
     }
+    image = rotated;
 }
+
 void rotate270(Image& image){
     Image rotated(image.height, image.width);
     for (int i=0; i<image.width; i++) {
@@ -205,6 +209,7 @@ void crop(int w, int h, int w1, int h1, Image & image) {
     image = cropped;
 }
 
+
 void Edge_Detection(Image &image) {
     for (int x = 0; x < image.width; x++) {
         for (int y = 0; y < image.height; y++) {
@@ -240,7 +245,7 @@ void Edge_Detection(Image &image) {
             }
         }
     }
-    image = edges;  
+    image = edges;
 }
 
 void resize(Image &image, int newW, int newH) {
@@ -365,11 +370,13 @@ int main()
         getline(cin, filename);
     }
     image.loadNewImage(filename);
+    v.push_back(image);
     bool flag = true;
     while (flag) {
         showMenu();
         int option;
         cin >> option;
+        image = v.back();
         switch (option) {
             case 1:
                 cout << "if you want to save the image before loading new one type y or Y, otherwise type any other character: ";
@@ -387,22 +394,29 @@ int main()
                     getline(cin , filename);
                 }
                 image.loadNewImage(filename);
+                v.push_back(image);
                 break;
             case 2:
                 Grayscale(image);
+                v.push_back(image);
                 break;
             case 3:
                 Black_and_White(image);
+                v.push_back(image);
                 break;
             case 4:
                 Invert_Image(image);
+                v.push_back(image);
                 break;
             case 5: {
                 cout << "Please enter the second file name: ";
                 string secondFile;
-                cin.ignore();
                 getline(cin, secondFile);
-                Image a(filename);
+                while (!fileExists(secondFile)) {
+                    cout << "File name you entered is not valid\n";
+                    cout << "Please enter a valid image name: \n";
+                    getline(cin , secondFile);
+                }
                 Image b(secondFile);
                 Image merged;
                 int merge_option;
@@ -411,8 +425,9 @@ int main()
                 cout << "2. Use common area\n";
                 cout << "Enter merge option: ";
                 cin >> merge_option;
-                mergeImages(a, b, merged, merge_option);
+                mergeImages(image, b, merged, merge_option);
                 image = merged;
+                v.push_back(image);
                 break;
             }
             case 6:
@@ -428,6 +443,7 @@ int main()
                         Vertical_Flip(image);
                         break;
                 }
+                v.push_back(image);
                 break;
             case 7:
                 cout << "1) Rotate 90 degrees\n";
@@ -446,6 +462,7 @@ int main()
                         rotate270(image);
                         break;
                 }
+                v.push_back(image);
                 break;
             case 8: {
                 int choice;
@@ -464,6 +481,7 @@ int main()
                }else{
                    cout <<"Invalid choice\n";
                }
+                v.push_back(image);
                break;
                }
             case 9:{
@@ -491,10 +509,12 @@ int main()
                     cin >> height;
                 }
                 crop(new_width, new_height,width, height, image);
+                v.push_back(image);
                 break;
             }
             case 11:{
                 Edge_Detection(image);
+                v.push_back(image);
                 break;
             }
             case 12:{
@@ -505,21 +525,44 @@ int main()
                 int NewHeight;
                 cin >> NewHeight;
                 resize(image, NewWidth, NewHeight);
+                v.push_back(image);
                 break;
             }
             case 14:{
                 enhanceSunlight(image);
+                v.push_back(image);
                 break;
             }
             case 15:{
                 oil_painting(image);
+                v.push_back(image);
                 break;
             }
-            case 16:{
+            case 16: {
+                if (v.size() >= 1) {
+                    v2.push_back(v.back());
+                    v.pop_back();
+                }
+                else {
+                    cout << "There is nothing to undo \n";
+                }
+                break;
+            }
+            case 17: {
+                if (v2.size() >= 0) {
+                    v.push_back(v2.back());
+                    v2.pop_back();
+                }
+                else {
+                    cout << "There is nothing to redo \n";
+                }
+                break;
+            }
+            case 18:{
                 save_image(image);
                 break;
             }
-            case 17:{
+            case 19:{
                 cout << "if you want to save the image before exit type y or Y, otherwise type any other character: ";
                 char y;
                 cin >> y;
