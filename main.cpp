@@ -406,6 +406,22 @@ void oil_painting (Image&image){
     image = final;
 }
 
+void Den_Den_Mushi(Image& image){
+    for (int i=0; i<image.width; i++){
+        for (int j=0; j<image.height; j++){
+            for (int k=0; k<3; k++){
+                if (j%3==0){
+                    for (int l=0; l<image.width; l++){
+                        image(i, j, 0)=0;
+                        image(i, j, 1)=0;
+                        image(i, j, 2)=0;
+                    }
+                }
+            }
+        }
+    }
+}
+
 void save_image(Image&image) {
     cout << "if you want to save the image in the same file type y or Y, otherwise type any other character: ";
     char x;
