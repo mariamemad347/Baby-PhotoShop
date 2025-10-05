@@ -269,6 +269,73 @@ void resize(Image &image, int newW, int newH) {
     image = output;
 }
 
+void Blur_Level1(Image& image) {
+    Image temp=image;
+    for (int i=0; i<image.width; i++) {
+        for (int j=0; j<image.height; j++) {
+            for (int k=0; k<3; k++) {
+                int sum=0;
+                int count=0;
+                for (int di=-1; di<=1; di++) {
+                    for (int dj=-1; dj<=1; dj++) {
+                        int ni=i+di; 
+                        int nj=j+dj; 
+                        if (ni>=0 && ni<image.width && nj>=0 && nj<image.height) {
+                            sum+=temp(ni, nj, k);
+                            count++;
+                        }
+                    }
+                }
+                image(i, j, k)=sum/count;
+            }
+        }
+    }  
+}
+void Blur_Level2(Image& image) {
+    Image temp=image;
+    for (int i=0; i<image.width; i++) {
+        for (int j=0; j<image.height; j++) {
+            for (int k=0; k<3; k++) {
+                int sum=0;
+                int count=0;
+                for (int di=-3; di<=3; di++) {
+                    for (int dj=-3; dj<=3; dj++) {
+                        int ni=i+di; 
+                        int nj=j+dj; 
+                        if (ni>=0 && ni<image.width && nj>=0 && nj<image.height) {
+                            sum+=temp(ni, nj, k);
+                            count++;
+                        }
+                    }
+                }
+                image(i, j, k)=sum/count;
+            }
+        }
+    }  
+}
+void Blur_Level3(Image& image) {
+    Image temp=image;
+    for (int i=0; i<image.width; i++) {
+        for (int j=0; j<image.height; j++) {
+            for (int k=0; k<3; k++) {
+                int sum=0;
+                int count=0;
+                for (int di=-5; di<=5; di++) {
+                    for (int dj=-5; dj<=5; dj++) {
+                        int ni=i+di; 
+                        int nj=j+dj; 
+                        if (ni>=0 && ni<image.width && nj>=0 && nj<image.height) {
+                            sum+=temp(ni, nj, k);
+                            count++;
+                        }
+                    }
+                }
+                image(i, j, k)=sum/count;
+            }
+        }
+    }  
+}
+
 void enhanceSunlight(Image &image) {
     for (int x = 0; x < image.width; x++) {
         for (int y = 0; y < image.height; y++) {
