@@ -638,6 +638,54 @@ int main()
                 v.push_back(image);
                 break;
             }
+            case 10:
+                 cout << "1) Simple Frame\n";
+                 cout << "2) Decorative Frame\n";
+                 cout << "Select option: ";
+                 cin >> option;
+                 switch (option) {
+                      case 1:
+                          cout << "Enter frame thickness: ";
+                          int thickness;
+                          cin >> thickness;
+                          cout << "Enter ratio of the red colour: ";
+                          int r;
+                          cin >> r;
+                          cout << "Enter ratio of the green colour: ";
+                          int g;
+                          cin >> g;
+                          cout << "Enter ratio of the blue colour: ";
+                          int b;
+                          cin >> b;
+                          Simple_Frame(image, thickness, r, g, b);
+                          break;
+                     case 2:
+                          cout << "Enter frame thickness: ";
+                          int thickness;
+                          cin >> thickness;
+                          cout << "Enter ratio of the red colour for the outside frame: ";
+                          int r1;
+                          cin >> r1;
+                          cout << "Enter ratio of the green colour for the outside frame: ";
+                          int g1;
+                          cin >> g1;
+                          cout << "Enter ratio of the blue colour for the outside frame: ";
+                          int b1;
+                          cin >> b1;
+                          cout << "Enter ratio of the red colour for the inside frame: ";
+                          int r2;
+                          cin >> r2;
+                          cout << "Enter ratio of the green colour for the inside frame: ";
+                          int g2;
+                          cin >> g2;
+                          cout << "Enter ratio of the blue colour for the inside frame: ";
+                          int b2;
+                          cin >> b2;
+                          Decorative_Frame(image, thickness, r1, g1, b1, r2, g2, b2);
+                          break;
+                 }  
+                 v.push_back(image);
+                 break;
             case 11:{
                 Edge_Detection(image);
                 v.push_back(image);
