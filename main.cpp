@@ -209,6 +209,46 @@ void crop(int w, int h, int w1, int h1, Image & image) {
     image = cropped;
 }
 
+void Simple_Frame(Image& image, int thickness, unsigned char r, unsigned char g, unsigned char b) {
+    for (int i=0; i<image.width; i++) {
+        for (int j=0; j<image.height; j++) {
+            if (i<thickness || j<thickness || i>=image.width-thickness || j>=image.height-thickness) {
+                image(i, j, 0)=r;  
+                image(i, j, 1)=g;  
+                image(i, j, 2)=b;  
+            }
+        }
+    }
+}
+void Decorative_Frame(Image& image, int thickness, unsigned char r1, unsigned char g1, unsigned char b1, unsigned char r2, unsigned char g2, unsigned char b2) {
+    Simple_Frame(image, thickness, r1, g1, b1);
+    for (int i=thickness; i<image.width-thickness; i++) {
+        for (int j=thickness; j<image.height-thickness; j++) {
+            if (i<2*thickness || j<2*thickness || i>=image.width-2*thickness || j>=image.height-2*thickness) {
+                image(i, j, 0)=r2;
+                image(i, j, 1)=g2;
+                image(i, j, 2)=b2;
+            }
+        }
+    }
+    int corner=thickness/3;  
+    for (int i=0; i<corner; i++) {    
+        for (int j=0; j<thickness; j++) {   
+            image(i+5, j+5, 0)=255;
+            image(i+5, j+5, 1)=255;
+            image(i+5, j+5, 2)=255;
+            image(j+5, i+5, 0)=255;
+            image(j+5, i+5, 1)=255;
+            image(j+5, i+5, 2)=255;
+            image(image.width-i-6, image.height-j-6, 0)=255;
+            image(image.width-i-6, image.height-j-6, 1)=255;
+            image(image.width-i-6, image.height-j-6, 2)=255;
+            image(image.width-j-6, image.height-i-6, 0)=255;
+            image(image.width-j-6, image.height-i-6, 1)=255;
+            image(image.width-j-6, image.height-i-6, 2)=255;
+        }
+    }
+}
 
 void Edge_Detection(Image &image) {
     for (int x = 0; x < image.width; x++) {
