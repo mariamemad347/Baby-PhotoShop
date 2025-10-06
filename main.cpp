@@ -33,14 +33,17 @@ void showMenu() {
     cout << "7) Filter: Rotate\n";
     cout << "8) Filter: Darken / Lighten\n";
     cout << "9) Filter: Crop\n";
+    cout << "10) Filter: Frame\n";
     cout << "11) Filter: Edge Detection\n";
     cout << "12) Filter: Resize\n";
+    cout << "13) Filter: Blur\n";
     cout << "14) Filter:enhanceSunlight\n";
     cout << "15) Filter: oil painting\n";
-    cout << "16) Undo\n";
-    cout << "17) Redo\n";
-    cout << "18) Save current image\n";
-    cout << "19) Exit\n";
+    cout << "16) Filter: Den Den Mushi\n";
+    cout << "17) Undo\n";
+    cout << "18) Redo\n";
+    cout << "19) Save current image\n";
+    cout << "20) Exit\n";
     cout << "Select option: ";
 }
 void Grayscale(Image &image) {
@@ -651,6 +654,25 @@ int main()
                 v.push_back(image);
                 break;
             }
+            case 13:
+                cout << "1) Level 1 of bluring\n";
+                cout << "2) Level 2 of bluring\n";
+                cout << "3) Level 3 of bluring\n";
+                cout << "Select option: ";
+                cin >> option;
+                switch (option) {
+                      case 1:
+                          Blur_Level1(image);
+                          break;
+                      case 2:
+                          Blur_Level2(image);
+                          break;
+                      case 3:
+                          Blur_Level3(image);
+                          break;
+                }
+                v.push_back(image);
+                break;
             case 14:{
                 enhanceSunlight(image);
                 v.push_back(image);
@@ -661,7 +683,11 @@ int main()
                 v.push_back(image);
                 break;
             }
-            case 16: {
+            case 16:
+                Den_Den_Mushi(image);
+                v.push_back(image);
+                break;
+            case 17: {
                 if (v.size() >= 1) {
                     v2.push_back(v.back());
                     v.pop_back();
@@ -671,7 +697,7 @@ int main()
                 }
                 break;
             }
-            case 17: {
+            case 18: {
                 if (v2.size() >= 0) {
                     v.push_back(v2.back());
                     v2.pop_back();
@@ -681,11 +707,11 @@ int main()
                 }
                 break;
             }
-            case 18:{
+            case 19:{
                 save_image(image);
                 break;
             }
-            case 19:{
+            case 20:{
                 cout << "if you want to save the image before exit type y or Y, otherwise type any other character: ";
                 char y;
                 cin >> y;
