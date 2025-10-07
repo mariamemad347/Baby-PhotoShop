@@ -2,8 +2,8 @@
 #include <fstream>
 #include <algorithm>
 #include <vector>
-
 using namespace std;
+
 Image image;
 string filename;
 vector<Image> v;
@@ -68,13 +68,12 @@ void Black_and_White(Image &image) {
             total += luminance;
         }
     }
-    unsigned int threshold = total / (image.width * image.height);
 
     for (int i = 0; i < image.width; ++i) {
         for (int j = 0; j < image.height; ++j) {
             unsigned int luminance = 0.299 * image(i, j, 0) + 0.587 * image(i, j, 1) + 0.114 * image(i, j, 2);
 
-            unsigned int value = (luminance < threshold) ? 0 : 255;
+            unsigned int value = (luminance < 128) ? 0 : 255;
             image(i, j, 0) = value;
             image(i, j, 1) = value;
             image(i, j, 2) = value;
@@ -562,6 +561,10 @@ int main()
                 cout << "2) Vertical Flip\n";
                 cout << "Select option: ";
                 cin >> option;
+                while (option!=1 && option!=2) {
+                    cout << "Invalid option \n";
+                    cout << "Please try again \n";
+                }
                 switch (option) {
                     case 1:
                         Horizontal_Flip(image);
@@ -578,6 +581,10 @@ int main()
                 cout << "3) Rotate 270 degrees\n";
                 cout << "Select option: ";
                 cin >> option;
+                while (option != 1 && option != 2 && option != 3) {
+                    cout << "Invalid option \n";
+                    cout << "Please try again \n";
+                }
                 switch (option) {
                     case 1:
                         rotate90(image);
@@ -644,6 +651,10 @@ int main()
                  cout << "2) Decorative Frame\n";
                  cout << "Select option: ";
                  cin >> option;
+                while (option != 1 && option != 2) {
+                    cout << "Invalid option \n";
+                    cout << "Please try again \n";
+                }
                  switch (option) {
                       case 1:
                           cout << "Enter frame thickness: ";
@@ -722,6 +733,7 @@ int main()
                          }
                           Decorative_Frame(image, thickness, r1, g1, b1, r2, g2, b2);
                           break;
+
                  }
                  v.push_back(image);
                  break;
@@ -747,6 +759,10 @@ int main()
                 cout << "3) Level 3 of bluring\n";
                 cout << "Select option: ";
                 cin >> option;
+                while (option != 1 && option != 2 && option != 3) {
+                    cout << "Invalid option \n";
+                    cout << "Please try again \n";
+                }
                 switch (option) {
                       case 1:
                           Blur_Level1(image);
@@ -808,7 +824,11 @@ int main()
                 flag = false;
                 break;
             }
+            default:
+                cout << "Invalid option \n";
+                cout << "Please try again \n";
         }
+
     }
     return 0;
 }
