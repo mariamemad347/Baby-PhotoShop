@@ -382,7 +382,6 @@ void Blur_Level3(Image& image) {
 void enhanceSunlight(Image &image) {
     for (int x = 0; x < image.width; x++) {
         for (int y = 0; y < image.height; y++) {
-            // Get original pixel values
             int r = image(x, y, 0);
             int g = image(x, y, 1);
             int b = image(x, y, 2);
