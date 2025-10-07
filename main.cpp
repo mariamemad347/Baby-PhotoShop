@@ -74,7 +74,7 @@ void Black_and_White(Image &image) {
         for (int j = 0; j < image.height; ++j) {
             unsigned int luminance = 0.299 * image(i, j, 0) + 0.587 * image(i, j, 1) + 0.114 * image(i, j, 2);
 
-            unsigned char value = (luminance < threshold) ? 0 : 255;
+            unsigned int value = (luminance < threshold) ? 0 : 255;
             image(i, j, 0) = value;
             image(i, j, 1) = value;
             image(i, j, 2) = value;
@@ -216,13 +216,14 @@ void Simple_Frame(Image& image, int thickness, unsigned char r, unsigned char g,
     for (int i=0; i<image.width; i++) {
         for (int j=0; j<image.height; j++) {
             if (i<thickness || j<thickness || i>=image.width-thickness || j>=image.height-thickness) {
-                image(i, j, 0)=r;  
-                image(i, j, 1)=g;  
-                image(i, j, 2)=b;  
+                image(i, j, 0)=r;
+                image(i, j, 1)=g;
+                image(i, j, 2)=b;
             }
         }
     }
 }
+
 void Decorative_Frame(Image& image, int thickness, unsigned char r1, unsigned char g1, unsigned char b1, unsigned char r2, unsigned char g2, unsigned char b2) {
     Simple_Frame(image, thickness, r1, g1, b1);
     for (int i=thickness; i<image.width-thickness; i++) {
@@ -234,9 +235,9 @@ void Decorative_Frame(Image& image, int thickness, unsigned char r1, unsigned ch
             }
         }
     }
-    int corner=thickness/3;  
-    for (int i=0; i<corner; i++) {    
-        for (int j=0; j<thickness; j++) {   
+    int corner=thickness/3;
+    for (int i=0; i<corner; i++) {
+        for (int j=0; j<thickness; j++) {
             image(i+5, j+5, 0)=255;
             image(i+5, j+5, 1)=255;
             image(i+5, j+5, 2)=255;
@@ -321,8 +322,8 @@ void Blur_Level1(Image& image) {
                 int count=0;
                 for (int di=-1; di<=1; di++) {
                     for (int dj=-1; dj<=1; dj++) {
-                        int ni=i+di; 
-                        int nj=j+dj; 
+                        int ni=i+di;
+                        int nj=j+dj;
                         if (ni>=0 && ni<image.width && nj>=0 && nj<image.height) {
                             sum+=temp(ni, nj, k);
                             count++;
@@ -332,7 +333,7 @@ void Blur_Level1(Image& image) {
                 image(i, j, k)=sum/count;
             }
         }
-    }  
+    }
 }
 void Blur_Level2(Image& image) {
     Image temp=image;
@@ -343,8 +344,8 @@ void Blur_Level2(Image& image) {
                 int count=0;
                 for (int di=-3; di<=3; di++) {
                     for (int dj=-3; dj<=3; dj++) {
-                        int ni=i+di; 
-                        int nj=j+dj; 
+                        int ni=i+di;
+                        int nj=j+dj;
                         if (ni>=0 && ni<image.width && nj>=0 && nj<image.height) {
                             sum+=temp(ni, nj, k);
                             count++;
@@ -354,7 +355,7 @@ void Blur_Level2(Image& image) {
                 image(i, j, k)=sum/count;
             }
         }
-    }  
+    }
 }
 void Blur_Level3(Image& image) {
     Image temp=image;
@@ -365,8 +366,8 @@ void Blur_Level3(Image& image) {
                 int count=0;
                 for (int di=-5; di<=5; di++) {
                     for (int dj=-5; dj<=5; dj++) {
-                        int ni=i+di; 
-                        int nj=j+dj; 
+                        int ni=i+di;
+                        int nj=j+dj;
                         if (ni>=0 && ni<image.width && nj>=0 && nj<image.height) {
                             sum+=temp(ni, nj, k);
                             count++;
@@ -376,7 +377,7 @@ void Blur_Level3(Image& image) {
                 image(i, j, k)=sum/count;
             }
         }
-    }  
+    }
 }
 
 void enhanceSunlight(Image &image) {
@@ -648,42 +649,80 @@ int main()
                           cout << "Enter frame thickness: ";
                           int thickness;
                           cin >> thickness;
-                          cout << "Enter ratio of the red colour: ";
+                          cout << "Enter ratio of the red colour from 0 to 255: ";
                           int r;
                           cin >> r;
-                          cout << "Enter ratio of the green colour: ";
+                         while(r < 0 || r > 255) {
+                             cout << "The ratio you have entered is invalid \n";
+                             cout << "Enter ratio of the red colour from 0 to 255: ";
+                         }
+                          cout << "Enter ratio of the green colour from 0 to 255: ";
                           int g;
                           cin >> g;
-                          cout << "Enter ratio of the blue colour: ";
+                          while(g < 0 || g > 255) {
+                              cout << "The ratio you have entered is invalid \n";
+                              cout << "Enter ratio of the green colour from 0 to 255: ";
+                          }
+                          cout << "Enter ratio of the blue colour from 0 to 255: ";
                           int b;
                           cin >> b;
+                         while(b < 0 || b > 255) {
+                             cout << "The ratio you have entered is invalid \n";
+                             cout << "Enter ratio of the blue colour from 0 to 255: ";
+                         }
                           Simple_Frame(image, thickness, r, g, b);
                           break;
                      case 2:
                           cout << "Enter frame thickness: ";
-                          int thickness;
                           cin >> thickness;
-                          cout << "Enter ratio of the red colour for the outside frame: ";
+                          cout << "Enter ratio of the red colour for the outside frame from 0 to 255: ";
                           int r1;
                           cin >> r1;
-                          cout << "Enter ratio of the green colour for the outside frame: ";
+                          while (r1 < 0 || r1 > 255) {
+                              cout << "The ratio you have entered is invalid\n";
+                              cout << "Enter ratio of the red colour for the outside frame from 0 to 255: ";
+                              cin >> r1;
+                          }
+                          cout << "Enter ratio of the green colour for the outside frame from 0 to 255: ";
                           int g1;
                           cin >> g1;
-                          cout << "Enter ratio of the blue colour for the outside frame: ";
+                          while (g1 < 0 || g1 > 255) {
+                              cout << "The ratio you have entered is invalid\n";
+                              cout << "Enter ratio of the green colour for the outside frame from 0 to 255: ";
+                              cin >> r1;
+                          }
+                          cout << "Enter ratio of the blue colour for the outside frame from 0 to 255: ";
                           int b1;
                           cin >> b1;
-                          cout << "Enter ratio of the red colour for the inside frame: ";
+                          while (b1 < 0 || b1 > 255) {
+                              cout << "The ratio you have entered is invalid\n";
+                              cout << "Enter ratio of the blue colour for the outside frame from 0 to 255: \n";
+                          }
+                          cout << "Enter ratio of the red colour for the inside frame from 0 to 255: \n";
                           int r2;
                           cin >> r2;
-                          cout << "Enter ratio of the green colour for the inside frame: ";
+                         while (r2 < 0 || r2 > 255) {
+                             cout << "The ratio you have entered is invalid\n";
+                             cout << "Enter ratio of the red colour for the inside frame from 0 to 255: \n";
+
+                         }
+                          cout << "Enter ratio of the green colour for the inside frame from 0 to 255: \n";
                           int g2;
                           cin >> g2;
-                          cout << "Enter ratio of the blue colour for the inside frame: ";
+                         while (g2 < 0 || g2 > 255) {
+                             cout << "The ratio you have entered is invalid\n";
+                             cout << "Enter ratio of the green colour for the inside frame from 0 to 255: \n";
+                         }
+                          cout << "Enter ratio of the blue colour for the inside frame from 0 to 255: \n";
                           int b2;
                           cin >> b2;
+                         while (b2 < 0 || b2 > 255) {
+                             cout << "The ratio you have entered is invalid\n";
+                             cout << "Enter ratio of the blue colour for the inside frame from 0 to 255: \n";
+                         }
                           Decorative_Frame(image, thickness, r1, g1, b1, r2, g2, b2);
                           break;
-                 }  
+                 }
                  v.push_back(image);
                  break;
             case 11:{
