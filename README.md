@@ -3,40 +3,26 @@ A console-based mini Photoshop built in C++.
 It performs basic image editing operations — reading, processing, and saving images — all through command-line input.
 The goal is to understand how image manipulation works behind the scenes.
 
-## Features
+## Features:
 Load and save images (e.g., BMP, PNG, JPEG)
 
 Apply filters such as:
 
-  Grayscale
-    
-  Black and White
-    
-  Invert Image
-    
-  Merge with another image
-    
-  Flip
-    
-  Rotate
-    
-  Darken / Lighten
-    
-  Crop
-    
-  Frame
-    
-  Edge Detection
-    
-  Resize
-    
-  Blur
-
-  Enhance Sunlight
-    
-  Oil painting
-    
-  Old TV
+  1) Grayscale
+  2) Black and White
+  3) Invert Image
+  4) Merge with another image 
+  5) Flip 
+  6) Rotate
+  7) Darken / Lighten
+  8) Crop
+  9) Frame
+  10) Edge Detection
+  11) Resize
+  12) Blur
+  13) Enhance Sunlight
+  14) Oil painting
+  15) Old TV
   
 Crop and resize images
 
@@ -44,12 +30,14 @@ Undo or redo filters
 
 Menu-driven text interface
 
-## Purpose
+## Purpose:
 
 This project was built to:
 
-Learn image processing fundamentals
+1) Learn image processing fundamentals
+2) Practice file handling and pixel manipulation in C++ 
 
-Practice file handling and pixel manipulation in C++ 
-
-Strengthen understanding of memory management and object-oriented programming
+## How to Run: 
+1) Open the project in any C++ IDE or terminal.
+2) Compile and run the main file.
+3) Follow the on-screen menu to choose filters and options.
