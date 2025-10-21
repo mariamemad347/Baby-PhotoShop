@@ -9,12 +9,34 @@ Load and save images (e.g., BMP, PNG, JPEG)
 Apply filters such as:
 
   Grayscale
-  
-  Invert colors
-  
-  Brightness
+    
+  Black and White
+    
+  Invert Image
+    
+  Merge with another image
+    
+  Flip
+    
+  Rotate
+    
+  Darken / Lighten
+    
+  Crop
+    
+  Frame
+    
+  Edge Detection
+    
+  Resize
+    
+  Blur
 
-  Blur and many more filters
+  Enhance Sunlight
+    
+  Oil painting
+    
+  Old TV
   
 Crop and resize images
 
